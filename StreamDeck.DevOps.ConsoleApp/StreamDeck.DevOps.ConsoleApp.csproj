@@ -1,14 +1,74 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AssemblyName>StreamDeck.DevOps.ConsoleApp</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.4.2" />
     <PackageReference Include="McMaster.Extensions.Hosting.CommandLine" Version="2.4.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.EventSource" Version="3.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="manifest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\buildDefaultIcon%402x.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\buildDefaultIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\buildIcon%402x.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\buildIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\pluginIcon%402x.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\pluginIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <PropertyGroup Condition="$(OS)=='Windows_NT'">
+    <sdPlugin>$(AppData)\Elgato\StreamDeck\Plugins\dev.parithon.devops.sdPlugin</sdPlugin>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(OS)=='mac'">
+    <sdPlugin>~/Library/Application Support/com.elgato.StreamDeck/Plugins/dev.parithon.devops.sdPlugin</sdPlugin>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <Target Name="CopyToSDPluginDirectory" AfterTargets="Build">    
+    <ItemGroup>
+      <CopyFiles Include="$(TargetDir)\**\*.*" />
+    </ItemGroup>
+    <MakeDir Directories="$(sdPlugin)" Condition="!Exists('$(sdPlugin)')" />
+    <Copy SourceFiles="@(CopyFiles)" DestinationFolder="$(sdPlugin)\%(RecursiveDir)" OverwriteReadOnlyFiles="true" Retries="3" RetryDelayMilliseconds="300" SkipUnchangedFiles="true" />
+    <Message Text="StreamDeck.DevOps.ConsoleApp -&gt; $(sdPlugin)" Importance="high" />
+  </Target>
+
+  <Target Name="CleanSDPluginDirectory" AfterTargets="Clean">
+    <RemoveDir Directories="$(sdPlugin)" Condition="Exists('$(sdPlugin)')" />
+    <Message Text="Removed directory $(sdPLugin)" Importance="high" />
+  </Target>
 
 </Project>

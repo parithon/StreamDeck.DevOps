@@ -1,0 +1,40 @@
+{
+  "Actions": [
+    {
+      "Icon": "Resources/buildIcon",
+      "Name": "Build",
+      "States": [
+        {
+          "Image": "Resources/buildIcon",
+          "TitleAlignment": "middle",
+          "FontSize": "16"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "",
+      "UUID": "dev.parithon.devops.build"
+    }
+  ],
+  "SDKVersion": 2,
+  "Author": "Anthony Conrad <anthony@parithon.dev>",
+  "CodePath": "StreamDeck.DevOps.ConsoleApp.exe",
+  "CodePathMac": "StreamDeck.DevOps.ConsoleApp",
+  "Description": "",
+  "Name": "DevOps",
+  "Icon": "Resources/pluginIcon",
+  "URL": "https://github.com/parithon/StreamDeck.DevOps",
+  "Version": "1.0",
+  "OS": [
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    },
+    {
+      "Platform": "man",
+      "MinimumVersion": "10.11"
+    }
+  ],
+  "Software": {
+    "MinimumVersion": "4.1"
+  }
+}
