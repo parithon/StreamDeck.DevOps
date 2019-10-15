@@ -57,13 +57,11 @@
   </ItemGroup>
 
   <PropertyGroup Condition="$(IsWindows)">
-    <sdPlugin>$(AppData)\Elgato\StreamDeck\Plugins\dev.parithon.devops.sdPlugin</sdPlugin>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(IsOSX)">
-    <sdPlugin>$(HOME)/Library/Application Support/com.elgato.StreamDeck/Plugins/dev.parithon.devops.sdPlugin</sdPlugin>
+    <sdPlugin Condition="$(IsWindows)">$(AppData)\Elgato\StreamDeck\Plugins\dev.parithon.devops.sdPlugin</sdPlugin>
+    <sdPlugin Condition="$(IsOSX)">$(HOME)/Library/Application Support/com.elgato.StreamDeck/Plugins/dev.parithon.devops.sdPlugin</sdPlugin>
   </PropertyGroup>
 
-  <Target Name="GenerateManifestActions" AfterTargets="Build" Condition="true">
+  <Target Name="GenerateManifestActions" AfterTargets="Build">
     <Message Text="Generating Actions in Manifest" Importance="high" />
     <Exec Command="$(TargetName).exe --generatemanifest" WorkingDirectory="$(TargetDir)" Condition="$(IsWindows)" />
     <Exec Command="$(TargetDir)/$(TargetName) --generatemanifest" WorkingDirectory="$(TargetDir)" Condition="$(IsOSX)" />
