@@ -2,7 +2,7 @@
   "profiles": {
     "StreamDeck.DevOps.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "-port 5"
+      "commandLineArgs": "--generatemanifest"
     }
   }
 }

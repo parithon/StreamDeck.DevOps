@@ -63,7 +63,13 @@
     <sdPlugin>$(HOME)/Library/Application Support/com.elgato.StreamDeck/Plugins/dev.parithon.devops.sdPlugin</sdPlugin>
   </PropertyGroup>
 
-  <Target Name="CopyToSDPluginDirectory" AfterTargets="Build">    
+  <Target Name="GenerateManifestActions" AfterTargets="Build" Condition="true">
+    <Message Text="Generating Actions in Manifest" Importance="high" />
+    <Exec Command="$(TargetName).exe --generatemanifest" WorkingDirectory="$(TargetDir)" Condition="$(IsWindows)" />
+    <Exec Command="$(TargetName) --generatemanifest" WorkingDirectory="$(TargetDir)" Condition="$(IsOSX)" />
+  </Target>
+
+  <Target Name="CopyToSDPluginDirectory" AfterTargets="GenerateManifestActions">    
     <ItemGroup>
       <CopyFiles Include="$(TargetDir)\**\*.*" />
     </ItemGroup>

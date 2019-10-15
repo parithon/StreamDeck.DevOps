@@ -1,6 +1,7 @@
 {
   "Actions": [
     {
+      "UUID": "dev.parithon.devops.build",
       "Icon": "Resources/buildIcon",
       "Name": "Build",
       "States": [
@@ -11,8 +12,7 @@
         }
       ],
       "SupportedInMultiActions": false,
-      "Tooltip": "",
-      "UUID": "dev.parithon.devops.build"
+      "Tooltip": ""
     }
   ],
   "SDKVersion": 2,
