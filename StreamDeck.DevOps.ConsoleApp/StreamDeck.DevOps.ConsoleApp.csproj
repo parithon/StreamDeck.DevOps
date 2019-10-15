@@ -66,7 +66,7 @@
   <Target Name="GenerateManifestActions" AfterTargets="Build" Condition="true">
     <Message Text="Generating Actions in Manifest" Importance="high" />
     <Exec Command="$(TargetName).exe --generatemanifest" WorkingDirectory="$(TargetDir)" Condition="$(IsWindows)" />
-    <Exec Command="$(TargetName) --generatemanifest" WorkingDirectory="$(TargetDir)" Condition="$(IsOSX)" />
+    <Exec Command="$(TargetDir)/$(TargetName) --generatemanifest" WorkingDirectory="$(TargetDir)" Condition="$(IsOSX)" />
   </Target>
 
   <Target Name="CopyToSDPluginDirectory" AfterTargets="GenerateManifestActions">    
