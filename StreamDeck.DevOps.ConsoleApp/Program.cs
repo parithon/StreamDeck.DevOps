@@ -33,17 +33,17 @@ namespace StreamDeck.DevOps.ConsoleApp
 
     class Program
     {
-        static Task<int> Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
             if (args.Any(arg => arg.ToLower() == "--generatemanifest"))
             {
-                return Task.Run(async () => {
+                return await Task.Run(async () => {
                     var manifestJSON = await File.ReadAllTextAsync("manifest.json");
                     var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
                     settings.Converters.Add(new StreamDeckActionConverter());
                     var manifest = JsonConvert.DeserializeObject<Manifest>(manifestJSON, settings);
                     manifest.Actions.Clear();
-                    var actionsByType = typeof(Program).Assembly.GetTypes().Where(t => t.IsClass && t.CustomAttributes.Any(a => a.AttributeType == typeof(StreamDeckActionAttribute)));
+                    var actionsByType = typeof(Program).Assembly.GetTypes().Where(t => t.CustomAttributes.Any(a => a.AttributeType == typeof(StreamDeckActionAttribute)));
                     foreach (var actionType in actionsByType)
                     {
                         var action = Activator.CreateInstance(actionType);
@@ -51,6 +51,7 @@ namespace StreamDeck.DevOps.ConsoleApp
                     }
                     var newManifestJSON = JsonConvert.SerializeObject(manifest);
                     await File.WriteAllTextAsync("manifest.json", newManifestJSON, System.Text.Encoding.UTF8);
+                    
                     return 0;
                 });
             }
@@ -58,13 +59,13 @@ namespace StreamDeck.DevOps.ConsoleApp
             var host = CreateHostBuilder(args)
                 .Build();
 
-            var app = new CommandLineApplication<App>();
+            using var app = new CommandLineApplication<App>();
 
             app.Conventions
                .UseDefaultConventions()
                .UseConstructorInjection(host.Services);
 
-            return app.ExecuteAsync(args);
+            return await app.ExecuteAsync(args);
         }
 
         static IHostBuilder CreateHostBuilder(string[] args)

@@ -48,13 +48,14 @@ namespace StreamDeck.DevOps.ConsoleApp
 
         public async Task OnExecuteAsync(CancellationToken cancellationToken)
         {
-            if (Configuration.GetSection("AttachDebugger").Get<bool>() == true &&
-                Info != null && 
+#if DEBUG
+            if (Info != null && 
                 Info.Devices.Any(d => d.Type != StreamDeckType.StreamDeckTesting))                
             {
                 Debugger.Launch();
             }
-            
+#endif
+
             try
             {
                 await _socket.ConnectAsync(new Uri($"ws://localhost:{Port}"), cancellationToken);
