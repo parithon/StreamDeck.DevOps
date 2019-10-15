@@ -30,7 +30,7 @@
       "MinimumVersion": "10"
     },
     {
-      "Platform": "man",
+      "Platform": "mac",
       "MinimumVersion": "10.11"
     }
   ],

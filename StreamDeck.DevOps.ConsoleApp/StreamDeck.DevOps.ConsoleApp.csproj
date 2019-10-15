@@ -3,7 +3,16 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <AssemblyName>StreamDeck.DevOps.ConsoleApp</AssemblyName>
+    <AssemblyName>StreamDeck.DevOps.ConsoleApp</AssemblyName>    
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsWindows>false</IsWindows>
+    <IsOSX>false</IsOSX>
+    <IsLinux>false</IsLinux>
+    <IsWindows Condition="'$(OS)' == 'Windows_NT'">true</IsWindows>
+    <IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX>
+    <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
   </PropertyGroup>
 
   <ItemGroup>
@@ -47,14 +56,11 @@
     </None>
   </ItemGroup>
 
-  <PropertyGroup Condition="$(OS)=='Windows_NT'">
+  <PropertyGroup Condition="$(IsWindows)">
     <sdPlugin>$(AppData)\Elgato\StreamDeck\Plugins\dev.parithon.devops.sdPlugin</sdPlugin>
   </PropertyGroup>
-  <PropertyGroup Condition="$(OS)=='mac'">
-    <sdPlugin>~/Library/Application Support/com.elgato.StreamDeck/Plugins/dev.parithon.devops.sdPlugin</sdPlugin>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <Optimize>true</Optimize>
+  <PropertyGroup Condition="$(IsOSX)">
+    <sdPlugin>$(HOME)/Library/Application Support/com.elgato.StreamDeck/Plugins/dev.parithon.devops.sdPlugin</sdPlugin>
   </PropertyGroup>
 
   <Target Name="CopyToSDPluginDirectory" AfterTargets="Build">    
@@ -68,7 +74,6 @@
 
   <Target Name="CleanSDPluginDirectory" AfterTargets="Clean">
     <RemoveDir Directories="$(sdPlugin)" Condition="Exists('$(sdPlugin)')" />
-    <Message Text="Removed directory $(sdPLugin)" Importance="high" />
   </Target>
 
 </Project>
