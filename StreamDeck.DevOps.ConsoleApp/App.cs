@@ -54,23 +54,22 @@ namespace StreamDeck.DevOps.ConsoleApp
             {
                 Debugger.Launch();
             }
-
-            // TODO: Find out why cancellationToken terminates app
-            await _socket.ConnectAsync(new Uri($"ws://localhost:{Port}"), CancellationToken.None);
+            
             try
             {
-                await _socket.SendAsync(GetPluginRegistrationBytes(), WebSocketMessageType.Text, true, CancellationToken.None);
+                await _socket.ConnectAsync(new Uri($"ws://localhost:{Port}"), cancellationToken);
+                await _socket.SendAsync(GetPluginRegistrationBytes(), WebSocketMessageType.Text, true, cancellationToken);
             }
-            catch (Exception ex)
+            catch (WebSocketException ex)
             {
                 Console.WriteLine(ex.Message);
             }
 
-            while (_socket.IsAvailable())
+            while (!cancellationToken.IsCancellationRequested && _socket.IsAvailable())
             {
                 var buffer = new byte[65536];
                 var segment = new ArraySegment<byte>(buffer, 0, buffer.Length);
-                await _socket.ReceiveAsync(segment, CancellationToken.None);
+                await _socket.ReceiveAsync(segment, cancellationToken);
                 var receivedPayloadJSON = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
 
                 if (!string.IsNullOrEmpty(receivedPayloadJSON) && !receivedPayloadJSON.StartsWith("\0"))
@@ -91,7 +90,7 @@ namespace StreamDeck.DevOps.ConsoleApp
                 var registration = new
                 {
                     @event = Event,
-                    UUID
+                    uuid = UUID
                 };
 
                 var outString = JsonConvert.SerializeObject(registration);

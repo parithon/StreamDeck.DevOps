@@ -4,15 +4,25 @@ using System;
 using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using McMaster.Extensions.CommandLineUtils;
+using System.Threading.Tasks;
 
 namespace StreamDeck.DevOps.ConsoleApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static Task<int> Main(string[] args)
         {
-            CreateHostBuilder(args)
-                .RunCommandLineApplicationAsync<App>(args);
+            var host = CreateHostBuilder(args)
+                .Build();
+
+            var app = new CommandLineApplication<App>();
+            
+            app.Conventions
+               .UseDefaultConventions()
+               .UseConstructorInjection(host.Services);
+
+            return app.ExecuteAsync(args);
         }
 
         static IHostBuilder CreateHostBuilder(string[] args)
